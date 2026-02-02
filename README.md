@@ -42,9 +42,9 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ### Módulos
 
-- **Dashboard** (`/admin`): Top Performers (RF-05) y Alertas de fraude (RF-06).
-- **Inventario** (`/admin/inventario`): Asignación masiva (RF-01) y recepción (RF-02).
-- **Digitación** (`/admin/digitacion`): Speed-Type (RF-03) y **Importar TSE** (`/admin/digitacion/importar`) para CSV (RF-04).
+- **Dashboard** (`/admin`): Top Performers y Alertas de fraude.
+- **Inventario** (`/admin/inventario`): Asignación masiva y recepción.
+- **Digitación** (`/admin/digitacion`): Speed-Type y **Importar TSE** (`/admin/digitacion/importar`) para CSV.
 
 Crea al menos un líder en la tabla `lideres` (por SQL o la pantalla Líderes en `/admin/lideres`) para poder asignar hojas.
 
