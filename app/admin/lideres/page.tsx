@@ -1,4 +1,5 @@
 import { listLideres } from "@/app/actions/lideres";
+import { getCurrentUserRole } from "@/lib/auth/roles";
 import { LideresContent } from "./LideresContent";
 
 export default async function LideresPage({
@@ -9,7 +10,12 @@ export default async function LideresPage({
   const params = await searchParams;
   const page = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
   const pageSize = Math.min(50, Math.max(5, parseInt(params.pageSize ?? "10", 10) || 10));
-  const { data: lideres, total, error } = await listLideres(page, pageSize);
+  const [result, role] = await Promise.all([
+    listLideres(page, pageSize),
+    getCurrentUserRole(),
+  ]);
+  const { data: lideres, total, error } = result;
+  const canEdit = role === "administrador";
 
   return (
     <div className="space-y-8">
@@ -31,6 +37,7 @@ export default async function LideresPage({
         total={total}
         page={page}
         pageSize={pageSize}
+        canEdit={canEdit}
       />
     </div>
   );

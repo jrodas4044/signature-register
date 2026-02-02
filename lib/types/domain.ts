@@ -45,6 +45,7 @@ export interface Lider {
   estado: LiderEstado;
   created_at: string;
   updated_at: string;
+  deleted_at?: string | null;
 }
 
 export interface Hoja {

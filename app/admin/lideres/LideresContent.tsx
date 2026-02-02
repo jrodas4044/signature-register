@@ -1,20 +1,24 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { createLider } from "@/app/actions/lideres-create";
 import type { Lider } from "@/lib/types/domain";
 import { Pagination } from "../components/Pagination";
+import { LiderDeleteButton } from "./[id]/LiderDeleteButton";
 
 export function LideresContent({
   lideres: initialLideres,
   total,
   page,
   pageSize,
+  canEdit,
 }: {
   lideres: Pick<Lider, "id" | "nombre" | "zona" | "dpi" | "estado">[];
   total: number;
   page: number;
   pageSize: number;
+  canEdit: boolean;
 }) {
   const [lideres, setLideres] = useState(initialLideres);
   const [nombre, setNombre] = useState("");
@@ -117,12 +121,13 @@ export function LideresContent({
                 <th className="px-4 py-3 font-medium">Zona</th>
                 <th className="px-4 py-3 font-medium">DPI</th>
                 <th className="px-4 py-3 font-medium">Estado</th>
+                <th className="px-4 py-3 font-medium">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {lideres.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-4 py-6 text-zinc-500 dark:text-zinc-400 text-center">
+                  <td colSpan={5} className="px-4 py-6 text-zinc-500 dark:text-zinc-400 text-center">
                     No hay líderes. Crea uno arriba.
                   </td>
                 </tr>
@@ -143,6 +148,27 @@ export function LideresContent({
                     </td>
                     <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
                       {l.estado}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Link
+                          href={`/admin/lideres/${l.id}`}
+                          className="text-indigo-600 dark:text-indigo-400 text-sm hover:underline"
+                        >
+                          Ver
+                        </Link>
+                        <Link
+                          href={`/admin/lideres/${l.id}/edit`}
+                          className="text-indigo-600 dark:text-indigo-400 text-sm hover:underline"
+                        >
+                          Editar
+                        </Link>
+                        <LiderDeleteButton
+                          id={l.id}
+                          nombre={l.nombre}
+                          disabled={!canEdit}
+                        />
+                      </div>
                     </td>
                   </tr>
                 ))
