@@ -66,21 +66,40 @@ export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex-1 space-y-0.5 px-3 py-4" aria-label="Administración">
+    <nav className="flex-1 space-y-1 px-3 py-6 overflow-y-auto" aria-label="Administración">
+      <p className="mb-3 px-3 font-semibold text-zinc-500 dark:text-zinc-400 text-xs uppercase tracking-wider">
+        Navegación
+      </p>
       {navItems.map((item, index) => {
         const isActive = pathname === item.href;
         return (
           <Link
             key={item.href}
             href={item.href}
-            className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+            className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all ${
               isActive
-                ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300"
-                : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                ? "bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow-lg shadow-indigo-500/25 dark:shadow-indigo-500/20"
+                : "text-zinc-600 hover:bg-zinc-100/80 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/80 dark:hover:text-zinc-100"
             }`}
           >
-            {icons[iconKeys[index]]}
-            {item.label}
+            {/* Active indicator */}
+            {isActive && (
+              <span className="top-1/2 left-0 absolute bg-white rounded-full w-1 h-8 -translate-x-1.5 -translate-y-1/2" aria-hidden="true" />
+            )}
+            
+            <span className={`transition-transform ${isActive ? "" : "group-hover:scale-110"}`}>
+              {icons[iconKeys[index]]}
+            </span>
+            <span>{item.label}</span>
+            
+            {/* Hover indicator */}
+            {!isActive && (
+              <span className="right-3 absolute opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </span>
+            )}
           </Link>
         );
       })}

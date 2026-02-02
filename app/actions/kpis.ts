@@ -28,6 +28,16 @@ export interface FraudAlertRow {
 const FRAUD_CAUSES = ["IMPRESION_DACTILAR", "PLANA", "FIRMA_NO_COINCIDE"];
 const FRAUD_THRESHOLD_PERCENT = 15;
 
+export interface LiderKpis {
+  hojas_asignadas: number;
+  hojas_recibidas: number;
+  aceptadas: number;
+  rechazadas: number;
+  revision_tse: number;
+  efectividad_real: number;
+  cumplimiento_meta: number;
+}
+
 export interface TopPerformersResult {
   data: TopPerformerRow[] | null;
   total: number;
@@ -134,6 +144,86 @@ export async function getTopPerformers(
   rows.sort((a, b) => b.efectividad_real - a.efectividad_real);
 
   return { data: rows, total: count ?? 0, page, pageSize, error: null };
+}
+
+/**
+ * KPIs for a single leader's assigned sheets.
+ * Same formulas as getTopPerformers: efectividad = aceptadas / (aceptadas + rechazadas + revision_tse) × 100;
+ * cumplimiento = hojas_recibidas / hojas_asignadas × 100.
+ */
+export async function getLiderKpis(
+  liderId: string
+): Promise<{ data: LiderKpis | null; error: string | null }> {
+  try {
+    await requireRole(["administrador", "digitador", "auditor"]);
+  } catch (e) {
+    return {
+      data: null,
+      error: e instanceof Error ? e.message : "Acceso denegado.",
+    };
+  }
+
+  const supabase = await createClient();
+
+  const { data: hojas, error: hojasError } = await supabase
+    .from("hojas")
+    .select("id, estado_fisico")
+    .eq("lider_id", liderId);
+
+  if (hojasError) {
+    return { data: null, error: hojasError.message };
+  }
+
+  const hojaIds = (hojas ?? []).map((h) => h.id);
+  const hojasAsignadas = hojaIds.length;
+  const hojasRecibidasCount =
+    (hojas ?? []).filter((h) => h.estado_fisico === "RECIBIDA").length;
+
+  let aceptadas = 0;
+  let rechazadas = 0;
+  let revision_tse = 0;
+
+  if (hojaIds.length > 0) {
+    const { data: adhesiones, error: adhesionesError } = await supabase
+      .from("adhesiones")
+      .select("estado_legal")
+      .in("hoja_id", hojaIds);
+
+    if (adhesionesError) {
+      return { data: null, error: adhesionesError.message };
+    }
+
+    for (const a of adhesiones ?? []) {
+      if (a.estado_legal === "ACEPTADO") aceptadas++;
+      else if (
+        a.estado_legal === "RECHAZADO" ||
+        a.estado_legal === "RECHAZADO_INTERNO"
+      )
+        rechazadas++;
+      else if (a.estado_legal === "REVISION_TSE") revision_tse++;
+    }
+  }
+
+  const denom = aceptadas + rechazadas + revision_tse;
+  const efectividadReal =
+    denom > 0 ? Math.round((aceptadas / denom) * 10000) / 100 : 0;
+  const cumplimientoMeta =
+    hojasAsignadas > 0
+      ? Math.round((hojasRecibidasCount / hojasAsignadas) * 10000) / 100
+      : 0;
+
+  return {
+    data: {
+      hojas_asignadas: hojasAsignadas,
+      hojas_recibidas: hojasRecibidasCount,
+      aceptadas,
+      rechazadas,
+      revision_tse,
+      efectividad_real: efectividadReal,
+      cumplimiento_meta: cumplimientoMeta,
+    },
+    error: null,
+  };
 }
 
 export interface FraudAlertsResult {

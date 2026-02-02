@@ -8,25 +8,25 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="bg-zinc-50 dark:bg-zinc-950 min-h-screen">
+    <div className="bg-gradient-to-br from-zinc-50 dark:from-zinc-950 via-zinc-50 dark:via-zinc-950 to-zinc-100/50 dark:to-zinc-900/50 min-h-screen">
       {/* Sidebar */}
-      <aside className="top-0 left-0 z-40 fixed bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 border-r w-64 h-screen shrink-0">
+      <aside className="top-0 left-0 z-40 fixed bg-white/80 dark:bg-zinc-900/80 shadow-xl shadow-zinc-900/5 dark:shadow-zinc-950/50 backdrop-blur-xl border-zinc-200/50 dark:border-zinc-800/50 border-r w-64 h-screen shrink-0">
         <div className="flex flex-col h-full">
           {/* Brand */}
-          <div className="flex items-center px-6 border-zinc-200 dark:border-zinc-800 border-b h-16">
+          <div className="flex items-center px-6 border-zinc-200/50 dark:border-zinc-800/50 border-b h-16">
             <Link
               href="/admin"
-              className="flex items-center gap-2 font-semibold text-zinc-900 dark:text-zinc-50"
+              className="group flex items-center gap-2.5 font-bold text-zinc-900 dark:text-zinc-50 transition-all"
             >
               <span
-                className="flex justify-center items-center bg-indigo-600 rounded-lg size-8 text-white"
+                className="flex justify-center items-center bg-gradient-to-br from-indigo-600 to-indigo-700 shadow-indigo-500/25 shadow-lg dark:shadow-indigo-500/10 rounded-xl size-9 text-white group-hover:scale-110 transition-transform"
                 aria-hidden
               >
                 <svg
                   className="size-5"
                   fill="none"
                   viewBox="0 0 24 24"
-                  strokeWidth={1.5}
+                  strokeWidth={2}
                   stroke="currentColor"
                 >
                   <path
@@ -36,20 +36,20 @@ export default function AdminLayout({
                   />
                 </svg>
               </span>
-              <span className="text-lg tracking-tight">Admin</span>
+              <span className="text-lg tracking-tight">UNION Admin</span>
             </Link>
           </div>
 
           <AdminNav />
 
           {/* Footer */}
-          <div className="space-y-0.5 mt-auto p-4 border-zinc-200 dark:border-zinc-800 border-t">
+          <div className="space-y-1 mt-auto p-4 border-zinc-200/50 dark:border-zinc-800/50 border-t">
             <Link
               href="/"
-              className="flex items-center gap-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 px-3 py-2.5 rounded-lg text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200 dark:text-zinc-400 text-sm transition-colors"
+              className="group flex items-center gap-3 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/80 px-3 py-2.5 rounded-xl text-zinc-600 hover:text-zinc-900 dark:hover:text-zinc-100 dark:text-zinc-400 text-sm transition-all"
             >
               <svg
-                className="size-5 shrink-0"
+                className="size-5 transition-transform group-hover:-translate-x-0.5 shrink-0"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
@@ -62,12 +62,12 @@ export default function AdminLayout({
                   d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
                 />
               </svg>
-              Volver al sitio
+              <span className="font-medium">Volver al sitio</span>
             </Link>
             <form action={signOut}>
               <button
                 type="submit"
-                className="flex items-center gap-3 hover:bg-zinc-100 dark:hover:bg-zinc-800 px-3 py-2.5 rounded-lg w-full text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200 dark:text-zinc-400 text-sm text-left transition-colors"
+                className="group flex items-center gap-3 hover:bg-red-50 dark:hover:bg-red-950/30 px-3 py-2.5 rounded-xl w-full text-zinc-600 hover:text-red-600 dark:hover:text-red-400 dark:text-zinc-400 text-sm text-left transition-all"
               >
                 <svg
                   className="size-5 shrink-0"
@@ -80,10 +80,10 @@ export default function AdminLayout({
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v3.75M15.75 9l-3-3m0 0l-3 3m3-3h8.25M8.25 21H5.625a2.25 2.25 0 01-2.25-2.25V15m13.5 6v.75a2.25 2.25 0 01-2.25 2.25h-2.25a2.25 2.25 0 01-2.25-2.25V15m0 0h3.75"
+                    d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
                   />
                 </svg>
-                Cerrar sesión
+                <span className="font-medium">Cerrar sesión</span>
               </button>
             </form>
           </div>
@@ -92,10 +92,23 @@ export default function AdminLayout({
 
       {/* Main content */}
       <main className="ml-64 min-h-screen">
-        <header className="top-0 z-30 sticky flex items-center bg-white/95 supports-backdrop-filter:bg-white/80 dark:bg-zinc-900/95 dark:supports-backdrop-filter:bg-zinc-900/80 backdrop-blur px-8 border-zinc-200 dark:border-zinc-800 border-b h-14">
-          <p className="font-medium text-zinc-600 dark:text-zinc-400 text-sm">
-            Panel de administración
-          </p>
+        <header className="top-0 z-30 sticky flex items-center bg-white/80 dark:bg-zinc-900/80 shadow-sm shadow-zinc-900/5 dark:shadow-zinc-950/50 backdrop-blur-xl px-8 border-zinc-200/50 dark:border-zinc-800/50 border-b h-16">
+          <div className="flex justify-between items-center w-full">
+            <div>
+              <p className="font-semibold text-zinc-900 dark:text-zinc-50">
+                Panel de administración
+              </p>
+              <p className="text-zinc-500 dark:text-zinc-400 text-xs">
+                Sistema de control de registro de firmas
+              </p>
+            </div>
+            <div className="flex items-center gap-2 bg-indigo-50 dark:bg-indigo-950/30 px-3 py-1.5 rounded-lg">
+              <div className="bg-green-500 rounded-full w-2 h-2 animate-pulse" />
+              <span className="font-medium text-indigo-700 dark:text-indigo-300 text-xs">
+                Sistema activo
+              </span>
+            </div>
+          </div>
         </header>
         <div className="p-6 md:p-8">{children}</div>
       </main>
