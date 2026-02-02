@@ -66,6 +66,31 @@ export async function getAdhesionesByNumeroHoja(numeroHoja: number): Promise<{
 }
 
 /**
+ * List adhesiones for a hoja by id (for admin detail view).
+ */
+export async function listAdhesionesByHojaId(hojaId: string): Promise<{
+  data: Adhesion[] | null;
+  error: string | null;
+}> {
+  try {
+    await requireRole(["administrador", "digitador", "auditor"]);
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("adhesiones")
+      .select("*")
+      .eq("hoja_id", hojaId)
+      .order("linea_id");
+    if (error) return { data: null, error: error.message };
+    return { data: (data ?? []) as Adhesion[], error: null };
+  } catch (e) {
+    return {
+      data: null,
+      error: e instanceof Error ? e.message : "Error al listar adhesiones.",
+    };
+  }
+}
+
+/**
  * Check if DPI already exists with ACEPTADO or PENDIENTE in another adhesion (not this hoja).
  */
 async function findDuplicateDpi(
